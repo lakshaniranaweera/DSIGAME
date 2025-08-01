@@ -10,6 +10,45 @@
 
   <!-- Custom Style -->
   <style>
+
+
+
+document.getElementById('regForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const fullName = document.getElementById('fullName').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+
+    if (fullName === "" || phone.length !== 10) {
+      alert("Please enter valid details.");
+      return;
+    }
+
+    const userData = {
+      name: fullName,
+      phone: phone
+    };
+
+    fetch("https://script.google.com/macros/s/AKfycbxkQCih8OerX0JAn0dDJEv7Fi8VzjojPPINFEPa97vhQ9eUyY_zsUnhv_5IE7bs-f7_dQ/exec", {
+      method: "POST",
+      body: JSON.stringify(userData),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.result === "success") {
+        window.location.href = "scan.html";  // redirect on success
+      } else {
+        alert("Error saving data.");
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Failed to connect to the server.");
+    });
+  });
     html, body {
       height: 100%;
       margin: 0;
@@ -59,23 +98,25 @@
       border: none;
     }
 
-    .start-scan-btn {
-      width: 100%;
-      font-size: 1.3rem;
-      padding: 12px;
-      transition: all 0.2s ease;
-      border: 2px solid white;
-      background-color: transparent;
-      color: white;
-    }
+ .start-scan-btn {
+  width: 100%;
+  font-size: 1.3rem;
+  padding: 12px;
+  transition: all 0.2s ease;
+  border: 2px solid white;
+  background-color: transparent;
+  color: white;
+}
 
-    .start-scan-btn:focus,
-    .start-scan-btn:active {
-      background-color: green !important;
-      color: white !important;
-      border-color: green !important;
-      box-shadow: 0 0 15px green;
-    }
+.start-scan-btn:focus,
+.start-scan-btn:active {
+  background-color: green !important;
+  color: white !important;
+  border-color: green !important;
+  box-shadow: 0 0 15px green;
+}
+
+
   </style>
 </head>
 <body>
@@ -96,7 +137,8 @@
         <div class="form-text text-light">Enter 10 digit number only.</div>
       </div>
 
-      <button type="submit" class="btn btn-outline-light start-scan-btn">Start Scanning</button>
+     <button type="submit" class="btn btn-outline-light start-scan-btn">Start Scanning</button>
+
     </form>
   </div>
 </div>
@@ -104,7 +146,6 @@
 <!-- Bootstrap Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Script to handle form -->
 <script>
   document.getElementById('regForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -117,31 +158,27 @@
       return;
     }
 
+    // --- 🚀 Send to your backend or Firebase/MongoDB ---
+    // Example:
     const userData = {
       name: fullName,
       phone: phone
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbxyN0WeoiPQUxUXnoHHK78fSi1fD-x5XEBuZYWXUV6jcVYshgFyERh4ykt1mdI0IP3I5g/exec", {
-      method: "POST",
-      body: JSON.stringify(userData),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.result === "success") {
-        window.location.href = "scan.html";
-      } else {
-        alert("Error saving data.");
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      alert("Failed to connect to the server.");
-    });
+    console.log("Saving to database:", userData);
+
+    // 🔔 Optional: Trigger your SMS API here (e.g., Twilio)
+    // Example: sendSMS(phone);
+
+    // Redirect to scanner
+    window.location.href = "scan.html";
   });
+
+  // Optional dummy SMS function
+  function sendSMS(phone) {
+    // Integrate with backend API here
+    alert("SMS sent to " + phone);
+  }
 </script>
 
 </body>
